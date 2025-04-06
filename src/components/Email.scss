@@ -22,8 +22,8 @@
             transition: all 1s linear;
             
             &.active {
-                color: index.$text-color;
-                background-color: index.$background-color;
+                color: index.$background-color;
+                background-color: index.$text-color;
                 box-shadow: none;
             }
             

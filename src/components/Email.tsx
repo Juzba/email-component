@@ -1,36 +1,49 @@
 import { useEffect, useState } from "react";
 import "./Email.scss";
+import UseAxios from "../hooks/UseAxios";
+
+const url = "https://localhost:7181/email/send";
 
 const Email = () => {
+	const { error, loading, fetchData } = UseAxios(url);
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [message, setMessage] = useState("");
-	const [emailMessage, setEmailMessage] = useState("");
+	const [emailInfo, setEmailInfo] = useState("");
 
 	const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		console.log(`Sending: ${name}, ${email}, ${message}`);
+		if (name && email && message) {
+			console.log("submit");
+			fetchData({ name, email, message });
+
+			if (error) {
+				setEmailInfo("Odeslání se nezdařilo.");
+			} else {
+				setEmailInfo("Odesláno.");
+			}
+		}
 	};
 
 	// after 5s clear error message
 	useEffect(() => {
-		if (emailMessage) {
+		if (emailInfo) {
 			const t1 = setTimeout(() => {
-				setEmailMessage("");
+				setEmailInfo("");
 			}, 5000);
 
 			return () => {
 				clearTimeout(t1);
 			};
 		}
-	}, [emailMessage]);
+	}, [emailInfo]);
 
 	return (
 		<section className="email">
-			<form onSubmit={() => submitForm}>
-				<div className={emailMessage ? "contact-me active" : "contact-me"}>
-					{emailMessage ? <p className="message">{emailMessage}</p> : <p className="message">Kontaktní formulář</p>}
+			<form onSubmit={submitForm}>
+				<div className={emailInfo ? "contact-me active" : "contact-me"}>
+					{emailInfo ? <p className="message">{emailInfo}</p> : <p className="message">Kontaktní formulář</p>}
 				</div>
 				<input
 					value={name}
